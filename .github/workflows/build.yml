@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/build.yml"
       - "**/*.cpp"
+      - ".github/workflows/build.yml"
 
 jobs:
   build:
@@ -15,11 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Build DLL
         shell: cmd
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cl /nologo /EHsc /LD /std:c++17 /DUNICODE /D_UNICODE src\DarkBedrockPvPHud.cpp user32.lib gdi32.lib /Fe:DarkBedrockPvPHud.dll
+          cl /nologo /EHsc /LD /std:c++17 /DUNICODE /D_UNICODE "dark_bedrock_pvp_client_autobuild\dark_bedrock_pvp_client\src\DarkBedrockPvPHud.cpp" user32.lib gdi32.lib /Fe:DarkBedrockPvPHud.dll
 
       - name: Upload DLL
         uses: actions/upload-artifact@v4
